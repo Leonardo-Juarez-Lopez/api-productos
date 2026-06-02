@@ -1,12 +1,7 @@
-// src/config/swagger.js
-// Configuración de swagger-jsdoc y swagger-ui-express
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi    = require('swagger-ui-express');
 
-// -------------------------------------------------------
-// Objeto de definición OpenAPI (el "swagger" del profesor)
-// -------------------------------------------------------
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -42,17 +37,15 @@ API construida con **Node.js + Express** y base de datos **PostgreSQL**.
     servers: [
       {
         url: process.env.NODE_ENV === 'production'
-          ? 'https://tu-app.railway.app'   // <-- cambia por tu URL real al desplegar
+          ? 'https://api-productos-production-732f.up.railway.app/'
           : `http://localhost:${process.env.PORT || 3000}`,
         description: process.env.NODE_ENV === 'production'
           ? 'Servidor en producción (Railway)'
           : 'Servidor local de desarrollo',
       },
     ],
-    // Componentes reutilizables (esquemas)
     components: {
       schemas: {
-        // Esquema de un Producto completo (respuesta)
         Producto: {
           type: 'object',
           properties: {
@@ -96,7 +89,6 @@ API construida con **Node.js + Express** y base de datos **PostgreSQL**.
           },
         },
 
-        // Esquema para crear/actualizar (sin id ni creado_en)
         ProductoInput: {
           type: 'object',
           required: ['nombre', 'precio', 'stock'],
@@ -130,7 +122,6 @@ API construida con **Node.js + Express** y base de datos **PostgreSQL**.
           },
         },
 
-        // Esquema de error estándar
         Error: {
           type: 'object',
           properties: {
@@ -142,7 +133,6 @@ API construida con **Node.js + Express** y base de datos **PostgreSQL**.
           },
         },
 
-        // Esquema de mensaje de éxito
         Mensaje: {
           type: 'object',
           properties: {
@@ -156,7 +146,6 @@ API construida con **Node.js + Express** y base de datos **PostgreSQL**.
       },
     },
   },
-  // Archivos donde swagger-jsdoc buscará los bloques @swagger
   apis: ['./src/routes/*.js'],
 };
 
@@ -167,7 +156,6 @@ const specs = swaggerJsdoc(options);
  * @param {import('express').Application} app
  */
 function setupSwagger(app) {
-  // Sirve la interfaz visual de Swagger UI en /doc
   app.use(
     '/doc',
     swaggerUi.serve,
@@ -177,8 +165,6 @@ function setupSwagger(app) {
     })
   );
 
-  // Endpoint adicional que devuelve el JSON de la especificación
-  // Útil para herramientas externas
   app.get('/doc.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(specs);
